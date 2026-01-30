@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projektová Roadmapa: HubSpot & Dynamics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background-color: #f8fafc; }
+        
+        /* Timeline Styles */
+        .timeline-line { position: absolute; left: 24px; top: 0; bottom: 0; width: 4px; background: #e2e8f0; z-index: 0; }
+        .timeline-item { position: relative; z-index: 10; }
+        
+        /* Card Styles */
+        .card-tech { border-left: 5px solid #6366f1; background: white; } /* Indigo - Sandbox */
+        .card-data { border-left: 5px solid #ec4899; background: white; } /* Pink - Data */
+        .card-live { border-left: 5px solid #22c55e; background: #f0fdf4; } /* Green - Go Live */
+        
+        .badge-tech { background-color: #e0e7ff; color: #4338ca; }
+        .badge-data { background-color: #fce7f3; color: #be185d; }
+
+        /* Print styles */
+        @media print {
+            .timeline-container { display: none; } 
+            .document-view { display: block; box-shadow: none; border: none; margin-top: 0; }
+            body { background: white; padding: 0; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-slate-800">
+
+    <!-- ČÁST 1: VIZUÁLNÍ ROADMAPA -->
+    <div class="max-w-4xl mx-auto timeline-container">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-800">Projektová Roadmapa</h1>
+            <p class="text-slate-500">Integrace HubSpot & Dynamics CRM (Q1 2026)</p>
+        </div>
+
+        <!-- Legenda -->
+        <div class="flex justify-center gap-4 mb-10 text-sm">
+            <span class="flex items-center gap-2"><div class="w-3 h-3 bg-indigo-500 rounded-full"></div> Fáze 1: Technika & Sandbox</span>
+            <span class="flex items-center gap-2"><div class="w-3 h-3 bg-pink-500 rounded-full"></div> Fáze 2: Data & Čištění</span>
+            <span class="flex items-center gap-2"><div class="w-3 h-3 bg-green-500 rounded-full"></div> Fáze 3: Go-Live</span>
+        </div>
+
+        <div class="relative pl-6 md:pl-0">
+            <!-- Svislá čára -->
+            <div class="timeline-line md:left-1/2 md:-ml-0.5 hidden md:block"></div>
+
+            <!-- WEEK 1: START -->
+            <div class="mb-8 md:flex justify-between items-center w-full timeline-item">
+                <div class="order-1 w-5/12 hidden md:block"></div>
+                <div class="z-20 flex items-center order-1 bg-slate-800 shadow-xl w-12 h-12 rounded-full justify-center text-white font-bold text-sm absolute left-0 md:static md:mx-auto">
+                    JAN
+                </div>
+                <div class="order-1 w-full md:w-5/12 px-1 md:py-4 pl-10 md:pl-0">
+                    <div class="card-tech shadow-md rounded-r-lg p-4">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-slate-800">Kick-off & Nastavení Sandboxu</h3>
+                            <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded">do 5. 2.</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-2">Definice polí, potvrzení Account ID a nasazení řešení na testovací prostředí.</p>
+                        <div class="mt-2 text-xs text-indigo-600 font-mono">1.1, 1.2, 1.3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEEK 2: KONFIGURACE & ZADÁNÍ DAT -->
+            <div class="mb-8 md:flex justify-between items-center w-full timeline-item flex-row-reverse">
+                <div class="order-1 w-5/12 hidden md:block"></div>
+                <div class="z-20 flex items-center order-1 bg-white border-4 border-slate-200 shadow-sm w-10 h-10 rounded-full justify-center text-slate-500 font-bold text-xs absolute left-1 md:static md:mx-auto">
+                    5.2.
+                </div>
+                <div class="order-1 w-full md:w-5/12 px-1 md:py-4 pl-10 md:pl-0 text-right md:text-right">
+                    <div class="card-tech shadow-md rounded-l-lg p-4 text-left">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded">do 6. 2.</span>
+                            <h3 class="font-bold text-slate-800">Konfigurace & Zadání čištění</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-2">Zadání pro čištění duplicit (firmy i e-maily) v obou systémech.</p>
+                        <div class="mt-2 text-xs text-slate-500 font-mono">
+                            <span class="text-indigo-600">1.6</span> | <span class="text-pink-600">2.1, 2.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEEK 3: LOGIKA & PÁROVÁNÍ -->
+            <div class="mb-8 md:flex justify-between items-center w-full timeline-item">
+                <div class="order-1 w-5/12 hidden md:block"></div>
+                <div class="z-20 flex items-center order-1 bg-white border-4 border-slate-200 shadow-sm w-10 h-10 rounded-full justify-center text-slate-500 font-bold text-xs absolute left-1 md:static md:mx-auto">
+                    10.2.
+                </div>
+                <div class="order-1 w-full md:w-5/12 px-1 md:py-4 pl-10 md:pl-0">
+                    <div class="card-tech shadow-md rounded-r-lg p-4">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-slate-800">Logika Integrace & Edge Cases</h3>
+                            <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded">do 13. 2.</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-2">Master systém, delete policy, verifikace leadů a vyloučení domén.</p>
+                        <div class="mt-2 text-xs text-indigo-600 font-mono">1.7 (Sloučeno)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MILESTONE: TESTING -->
+            <div class="mb-8 md:flex justify-between items-center w-full timeline-item">
+                <div class="order-1 w-5/12 hidden md:block"></div>
+                <div class="z-20 flex items-center order-1 bg-orange-100 border-4 border-orange-500 shadow-xl w-14 h-14 rounded-full justify-center text-orange-700 font-bold text-lg absolute left-0 md:static md:mx-auto">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <div class="order-1 w-full md:w-5/12 px-1 md:py-4 pl-10 md:pl-0">
+                     <div class="bg-orange-50 border-l-4 border-orange-500 shadow-lg rounded-r-lg p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-orange-900 text-lg">VYHODNOCENÍ TESTOVÁNÍ</h3>
+                            <span class="font-bold text-orange-700">13. 2.</span>
+                        </div>
+                        <p class="text-sm text-orange-800">Zhodnocení funkčnosti spuštěné integrace na Sandbox prostředích a vzniklých Edge Cases.</p>
+                        <div class="mt-2 text-xs text-orange-600 font-mono">1.8</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEEK 4: DATA EXECUTION & FIXES -->
+            <div class="mb-8 md:flex justify-between items-center w-full timeline-item flex-row-reverse">
+                <div class="order-1 w-5/12 hidden md:block"></div>
+                <div class="z-20 flex items-center order-1 bg-white border-4 border-slate-200 shadow-sm w-10 h-10 rounded-full justify-center text-slate-500 font-bold text-xs absolute left-1 md:static md:mx-auto">
+                    17.2.
+                </div>
+                <div class="order-1 w-full md:w-5/12 px-1 md:py-4 pl-10 md:pl-0">
+                    <div class="card-data shadow-md rounded-l-lg p-4 text-left">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded">do 19. 2.</span>
+                            <h3 class="font-bold text-slate-800">Čištění dat & Finální opravy</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-2">Realizace čištění HS, technické párování (2.7), dokončení dokumentace a oprava chyb.</p>
+                        <div class="mt-2 text-xs font-mono">
+                            <span class="text-pink-600">2.2, 2.7, 2.8</span> | <span class="text-indigo-600">1.9 - 1.12</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEEK 5: GO LIVE -->
+            <div class="mb-8 md:flex justify-between items-center w-full timeline-item">
+                <div class="order-1 w-5/12 hidden md:block"></div>
+                <div class="z-20 flex items-center order-1 bg-green-600 shadow-xl w-14 h-14 rounded-full justify-center text-white font-bold text-xl absolute left-0 md:static md:mx-auto">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="order-1 w-full md:w-5/12 px-1 md:py-4 pl-10 md:pl-0">
+                    <div class="card-live shadow-lg rounded-r-lg p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-green-900 text-lg">GO-LIVE & SPUŠTĚNÍ</h3>
+                            <span class="font-bold text-green-700">2. 3.</span>
+                        </div>
+                        <ul class="text-sm text-green-800 list-disc pl-4 space-y-1">
+                            <li>23.2. Spuštění integrace & load dat</li>
+                            <li>26.2. Zapnutí Lead Automatizací</li>
+                            <li>do 2.3. Hypercare & Předání</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ČÁST 2: DETAILNÍ TEXTOVÝ SOUPIS -->
+    <section class="document-view max-w-4xl mx-auto mt-16 mb-20">
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 min-h-[800px]">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 md:px-10 py-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Soupis kroků a priorit</h2>
+                <p class="text-gray-500">Detailní harmonogram projektu (Backlog)</p>
+            </div>
+
+            <div class="px-6 md:px-10 py-8 space-y-10">
+
+                <!-- SEKCE 1 -->
+                <div>
+                    <h3 class="text-xl font-bold text-blue-800 border-b-2 border-blue-100 pb-2 mb-4">1. SEKCE: Aktuální priority a testování řešení (Sandbox)</h3>
+                    <ul class="space-y-6 text-sm leading-relaxed text-gray-700">
+                        
+                        <!-- 1.1 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.1 Komunikace na klienta & Zadání (RVLT)</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 29. 1.</span>
+                            </div>
+                            <p class="text-gray-600">První komunikace "next steps", zadání definice polí u leadu/kontaktu (1.4), zadání polí pro lead automatizace a logiku (1.7), potvrzení Account ID (1.6) a autorizace Microsoft Dynamics Sandbox na HubSpot sandbox (1.2).</p>
+                        </li>
+
+                        <!-- 1.2 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.2 Připojení sandboxu HS na MS Dynamics</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 2. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Realizace technického připojení na základě zadání z bodu 1.1 (úkol pro CTP).</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.1</span>
+                        </li>
+
+                        <!-- 1.3 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.3 Nasazení na Sandbox</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 5. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Kompletní nasazení nového řešení na Sandbox prostředí.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.1</span>
+                        </li>
+
+                        <!-- 1.4 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.4 Vytvoření polí v Dynamics (CTP)</strong>
+                                <span class="text-xs font-semibold text-gray-700 bg-gray-100 px-2 py-1 rounded">Termín: TBD</span>
+                            </div>
+                            <p class="text-gray-600">Realizace polí pro neasociované firmy a lead automatizace na straně klienta.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.1</span>
+                        </li>
+
+                        <!-- 1.5 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.5 Vytvoření polí v HubSpot (RVLT)</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: +1 den</span>
+                            </div>
+                            <p class="text-gray-600">Zrcadlové vytvoření polí v HubSpot do 1 dne od potvrzení v Microsoft Dynamics.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.4</span>
+                        </li>
+
+                        <!-- 1.6 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.6 Potvrzení Account ID</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 5. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Potvrzení využití Account ID pro dlouhodobé spojování firem (dotaz na CTP).</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Součást: 1.1</span>
+                        </li>
+
+                        <!-- 1.7 MERGED -->
+                        <li class="pl-4 border-l-2 border-gray-200 bg-blue-50/50 p-3 rounded-r -ml-2">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-blue-900 text-lg">1.7 Definování podpůrných funkcí integrace a řešení Edge Cases</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 13. 2.</span>
+                            </div>
+                            <p class="text-gray-700 font-medium">Definice logiky integrace a ošetření známých Edge Cases.</p>
+                             <ul class="mt-2 list-disc list-inside text-gray-600 text-xs space-y-1">
+                                <li>Definování a nastavení zdroje pravdy (Source of Truth) jednotlivých objektů</li>
+                                <li>Verifikační flow leadů a flow prioritizace firem propojených s Microsoft Dynamics</li>
+                                <li>Porovnání přínosu a náročnosti vylučování domén nadnárodních firem z funkce "Create and associate Companies with Contacts"</li>
+                                <li>Delete Sync Policy (prevence nechtěných smazání)</li>
+                                <li>Podpora integrace (doplňková workflow)</li>
+                            </ul>
+                            <span class="text-xs text-gray-400 italic block mt-2">Závisí na: 1.16, 1.5</span>
+                        </li>
+
+                        <!-- 1.8 Main Testing -->
+                        <li class="pl-4 border-l-4 border-purple-400 bg-purple-50/50 p-3 rounded-r -ml-2">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-purple-900 text-lg">1.8 Zhodnocení funkčnosti spuštěné integrace na Sandbox prostředích, komplexního testování a vzniklých Edge Cases</strong>
+                                <span class="text-xs font-semibold text-purple-700 bg-purple-100 px-2 py-1 rounded">Termín: do 13. 2.</span>
+                            </div>
+                            <p class="text-gray-700">Vyhodnocení výsledků z běžící integrace a testování.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.3, 1.5, 1.6, 1.7, 2.6, 2.7</span>
+                        </li>
+
+                        <!-- 1.9 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.9 Rezerva na opravy a vícepráce</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 17. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Prostor pro ladění komplikací zjištěných během testování.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.8</span>
+                        </li>
+
+                        <!-- 1.10 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.10 Logika tvorby leadů</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 17. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Workflow "známá vs. neznámá firma" + zápis poznámek o HubSpot firmě či asociace.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.3</span>
+                        </li>
+
+                        <!-- 1.11 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.11 Dokumentace a Diagramy</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 19. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Aktualizace technické dokumentace a diagramů celého řešení.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: Všechny body Sekce 1 a 2.6, 2.7</span>
+                        </li>
+
+                        <!-- 1.12 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">1.12 Error Management</strong>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">Termín: do 19. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Popsání nejčastějších errorů a návrh jejich řešení.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 1.8</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SEKCE 2 -->
+                <div>
+                    <h3 class="text-xl font-bold text-amber-800 border-b-2 border-amber-100 pb-2 mb-4">2. SEKCE: Příprava systému na 1st sync + celou integraci</h3>
+                    <ul class="space-y-6 text-sm leading-relaxed text-gray-700">
+                        
+                        <!-- 2.1 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.1 Čištění HubSpotu (Zadání)</strong>
+                                <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded">Termín: do 6. 2.</span>
+                            </div>
+                            <p class="text-gray-600">RVLT připraví zadání pro vyčištění duplicitních accounts.</p>
+                        </li>
+
+                        <!-- 2.2 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.2 Čištění HubSpotu (Realizace)</strong>
+                                <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded">Termín: do 19. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Provedení hromadného vyčištění v HubSpot prostředí.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 2.1</span>
+                        </li>
+
+                        <!-- 2.3 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.3 Čištění Dynamics (Zadání & Realizace)</strong>
+                                <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded">Termín: do 6. 2.</span>
+                            </div>
+                            <p class="text-gray-600">RVLT připraví zadání pro duplicity firem, kontaktů a neaktivních e-mailů. Realizace čištění proběhne na straně CTP.</p>
+                        </li>
+
+                        <!-- 2.4 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.4 Doplnění domén (Dynamics)</strong>
+                                <span class="text-xs font-semibold text-gray-700 bg-gray-100 px-2 py-1 rounded">Termín: TBD</span>
+                            </div>
+                            <p class="text-gray-600">Zpětné přidání domén ke všem firmám v Microsoft Dynamics.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 2.3</span>
+                        </li>
+
+                        <!-- 2.5 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.5 Povinná doména v Dynamics</strong>
+                                <span class="text-xs font-semibold text-gray-700 bg-gray-100 px-2 py-1 rounded">Termín: TBD</span>
+                            </div>
+                            <p class="text-gray-600">Nastavení povinného pole pro doménu (mimo website) v Microsoft Dynamics.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 2.3</span>
+                        </li>
+
+                        <!-- 2.6 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.6 Iniciační napárování firem (Zadání)</strong>
+                                <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded">Termín: do 9. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Zmapování kroků pro napárování firem v HubSpotu před prvním spuštění integrace.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 2.3, 2.4, 2.5</span>
+                        </li>
+
+                        <!-- 2.7 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.7 Iniciační napárování firem (Realizace)</strong>
+                                <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded">Termín: do 17. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Provedení technického párování v HubSpot před prvním spuštění integrace.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 2.6</span>
+                        </li>
+
+                        <!-- 2.8 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">2.8 Validační postup</strong>
+                                <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded">Termín: do 19. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Popsat validační kroky a technický postup iniciačního syncu - spuštění integrace.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: Celá Sekce 2</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SEKCE 3 -->
+                <div>
+                    <h3 class="text-xl font-bold text-emerald-800 border-b-2 border-emerald-100 pb-2 mb-4">3. SEKCE: Iniciační sync & spuštění integrace</h3>
+                    <ul class="space-y-6 text-sm leading-relaxed text-gray-700">
+                        
+                        <!-- 3.1 -->
+                        <li class="pl-4 border-l-4 border-red-500 bg-red-50/50 p-3 rounded-r -ml-2">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-red-800 text-lg">3.1 Sign-off fází 1 a 2</strong>
+                                <span class="text-xs font-semibold text-red-700 bg-red-100 px-2 py-1 rounded">Podmínka</span>
+                            </div>
+                            <p class="text-gray-700">Formální schválení připravenosti sandboxu a dat.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: Celá Sekce 1 a 2</span>
+                        </li>
+
+                        <!-- 3.2 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">3.2 Spuštění integrace</strong>
+                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">Termín: od 23. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Postupné spouštění a load dat do HubSpotu (3 dny).</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: Celá Sekce 1, 2 a bod 3.1</span>
+                        </li>
+
+                        <!-- 3.3 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">3.3 Lead automatizace</strong>
+                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">Termín: do 26. 2.</span>
+                            </div>
+                            <p class="text-gray-600">Ostré spuštění leadových automatizací v produkci.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 3.2</span>
+                        </li>
+
+                        <!-- 3.4 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-gray-900 text-lg">3.4 Monitoring (Hypercare)</strong>
+                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">Termín: 23. 2. – 2. 3.</span>
+                            </div>
+                            <p class="text-gray-600">Fáze intenzivního sledování v ostrém provozu.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 3.3</span>
+                        </li>
+
+                        <!-- 3.5 -->
+                        <li class="pl-4 border-l-2 border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
+                                <strong class="text-emerald-800 text-lg">3.5 Potvrzení</strong>
+                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">Termín: 2. 3.</span>
+                            </div>
+                            <p class="text-gray-600">Finální potvrzení funkčnosti a uzavření projektu.</p>
+                            <span class="text-xs text-gray-400 italic block mt-1">Závisí na: 3.4</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
