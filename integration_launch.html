@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Launch Canvas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        /* Timeline line */
+        .timeline-container { position: relative; }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 2rem;
+            width: 2px;
+            background-color: #e2e8f0;
+            z-index: 0;
+        }
+
+        @media (min-width: 768px) {
+            .timeline-container::before { left: 50%; transform: translateX(-50%); }
+        }
+
+        /* Checkbox styling */
+        .task-checkbox {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            color: currentColor;
+            width: 1.25em;
+            height: 1.25em;
+            border: 2px solid #cbd5e1;
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            flex-shrink: 0;
+        }
+
+        .task-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .task-checkbox:checked {
+            background-color: #0ea5e9; 
+            border-color: #0ea5e9;
+        }
+
+        .task-checkbox:checked::before {
+            transform: scale(1);
+        }
+
+        /* Completed state styling (Timeline tasks) */
+        .task-completed .task-content-main {
+            opacity: 0.6;
+        }
+        .task-completed .task-desc {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+        
+        /* Object Card completed state (Minimalist Green) */
+        .object-card {
+            transition: all 0.3s ease;
+        }
+        .task-completed.object-card {
+            background-color: #f0fdf4; /* emerald-50 */
+            border-color: #a7f3d0; /* emerald-200 */
+            box-shadow: none;
+        }
+        .task-completed.object-card .entity-badge {
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+        
+        /* Checkbox override for object cards */
+        .task-completed.object-card .task-checkbox:checked {
+            background-color: #10b981; /* emerald-500 */
+            border-color: #10b981;
+        }
+
+        /* "DONE" Indicator inside Object Card */
+        .object-card .done-indicator {
+            display: none;
+        }
+        .task-completed.object-card .done-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #059669; /* emerald-600 */
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* CRM Entity Badges - Colorful */
+        .entity-badge { 
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            padding: 2px 6px; 
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .entity-badge i { font-size: 0.7rem; opacity: 0.8; }
+        
+        .badge-countries { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .badge-accounts { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .badge-contacts { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
+        .badge-leads { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+        /* Notes Textarea */
+        .note-input {
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .note-input:focus {
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto mb-12">
+        <!-- Header -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Integration Launch Plan</h1>
+                <p class="text-slate-500 mt-2 flex items-center gap-2 text-sm font-medium">
+                    <i class="fa-solid fa-check-circle text-sky-500"></i> Prerequisite: Roadmap sections 1 and 2 are fully completed.
+                </p>
+            </div>
+            <div class="bg-slate-50 px-5 py-4 rounded-xl border border-slate-200 shadow-inner text-right min-w-[200px]">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Target Start Date</p>
+                <p id="headerStartDate" class="text-lg font-bold text-slate-800">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Overall Object Status -->
+        <div class="mb-12">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 px-2">Overall Object Status</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Countries -->
+                <div class="object-card task-container bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="entity-badge badge-countries"><i class="fa-solid fa-globe"></i> Countries</span>
+                            <span class="done-indicator"><i class="fa-solid fa-check"></i> Done</span>
+                        </div>
+                        <input type="checkbox" class="task-checkbox" data-id="obj-countries">
+                    </div>
+                    <textarea class="note-input w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white resize-none" rows="2" placeholder="Overall notes or status..." data-note-id="obj-countries-note"></textarea>
+                </div>
+
+                <!-- Accounts -->
+                <div class="object-card task-container bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                            <span class="done-indicator"><i class="fa-solid fa-check"></i> Done</span>
+                        </div>
+                        <input type="checkbox" class="task-checkbox" data-id="obj-accounts">
+                    </div>
+                    <textarea class="note-input w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white resize-none" rows="2" placeholder="Overall notes or status..." data-note-id="obj-accounts-note"></textarea>
+                </div>
+
+                <!-- Contacts -->
+                <div class="object-card task-container bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                            <span class="done-indicator"><i class="fa-solid fa-check"></i> Done</span>
+                        </div>
+                        <input type="checkbox" class="task-checkbox" data-id="obj-contacts">
+                    </div>
+                    <textarea class="note-input w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white resize-none" rows="2" placeholder="Overall notes or status..." data-note-id="obj-contacts-note"></textarea>
+                </div>
+
+                <!-- Leads -->
+                <div class="object-card task-container bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="entity-badge badge-leads"><i class="fa-solid fa-bullseye"></i> Leads</span>
+                            <span class="done-indicator"><i class="fa-solid fa-check"></i> Done</span>
+                        </div>
+                        <input type="checkbox" class="task-checkbox" data-id="obj-leads">
+                    </div>
+                    <textarea class="note-input w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white resize-none" rows="2" placeholder="Overall notes or status..." data-note-id="obj-leads-note"></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-container relative pt-4">
+
+            <!-- DAY 0 -->
+            <div class="relative flex flex-col md:flex-row items-center justify-between w-full mb-12">
+                <div class="order-1 w-full md:w-5/12 hidden md:block text-right pr-8">
+                    <h3 class="text-2xl font-bold text-slate-800">Day 0</h3>
+                    <p class="text-sky-600 font-medium date-display" data-day="0">Loading...</p>
+                </div>
+                
+                <div class="z-10 flex items-center justify-center order-1 w-14 h-14 bg-sky-600 shadow-lg rounded-full border-4 border-white absolute left-0 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
+                    <span class="text-white font-bold text-lg">D0</span>
+                </div>
+
+                <div class="order-1 w-full md:w-5/12 pl-20 md:pl-8 mt-4 md:mt-0">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100 transition-shadow">
+                        <!-- Mobile Header -->
+                        <div class="md:hidden mb-4 pb-3 border-b border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-800">Day 0</h3>
+                            <p class="text-sky-600 text-sm font-medium date-display" data-day="0"></p>
+                        </div>
+
+                        <ul class="space-y-6">
+                            <!-- Task 1 -->
+                            <li class="task-container flex items-center gap-4">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d0-1"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-countries"><i class="fa-solid fa-globe"></i> Countries</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Execute the complete initial import of all country records.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none" rows="1" placeholder="Add a note..." data-note-id="d0-1-note"></textarea>
+                                </div>
+                            </li>
+                            <!-- Task 2 -->
+                            <li class="task-container flex items-center gap-4">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d0-2"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Establish validation segments for ongoing monitoring:</p>
+                                        <ul class="text-xs text-slate-500 mt-1.5 list-disc pl-4 space-y-1 task-desc">
+                                            <li>Net new contacts vs. successfully synced contacts.</li>
+                                            <li>Contacts expected to have consent in Dynamics vs. missing consent in HubSpot.</li>
+                                            <li>Contacts missing Dynamics account associations.</li>
+                                        </ul>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none" rows="1" placeholder="Add a note..." data-note-id="d0-2-note"></textarea>
+                                </div>
+                            </li>
+                            <!-- Task 3 -->
+                            <li class="task-container flex items-center gap-4 pt-4 border-t border-slate-50">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d0-3"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Phase 1: Synchronize records created since Jan 1, 2026.</p>
+                                        <p class="text-xs text-slate-500 mt-1 task-desc">Conduct rigorous quality assurance and proactively monitor error logs.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none" rows="1" placeholder="Add a note..." data-note-id="d0-3-note"></textarea>
+                                </div>
+                            </li>
+                            <!-- Task 4 -->
+                            <li class="task-container flex items-center gap-4">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d0-4"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Phase 2: Synchronize records created within the last 180 days.</p>
+                                        <p class="text-xs text-slate-500 mt-1 task-desc">Continue in-depth quality assurance and dedicated error log tracking.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none" rows="1" placeholder="Add a note..." data-note-id="d0-4-note"></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAY 1 -->
+            <div class="relative flex flex-col md:flex-row-reverse items-center justify-between w-full mb-12">
+                <div class="order-1 w-full md:w-5/12 hidden md:block text-left pl-8">
+                    <h3 class="text-2xl font-bold text-slate-800">Day 1</h3>
+                    <p class="text-slate-500 font-medium date-display" data-day="1">Loading...</p>
+                </div>
+                
+                <div class="z-10 flex items-center justify-center order-1 w-12 h-12 bg-white text-slate-500 font-bold border-4 border-slate-200 rounded-full absolute left-1 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
+                    D1
+                </div>
+
+                <div class="order-1 w-full md:w-5/12 pl-20 md:pr-8 md:pl-0 mt-4 md:mt-0 text-left md:text-right">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100 transition-shadow">
+                        <!-- Mobile Header -->
+                        <div class="md:hidden mb-4 pb-3 border-b border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-800">Day 1</h3>
+                            <p class="text-slate-500 text-sm font-medium date-display" data-day="1"></p>
+                        </div>
+
+                        <ul class="space-y-6 md:flex md:flex-col md:items-end text-left md:text-right">
+                            <li class="task-container flex items-center md:flex-row-reverse gap-4 w-full">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d1-1"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap md:justify-end gap-2 mb-1.5">
+                                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Synchronize all remaining records created within the past year.</p>
+                                        <p class="text-xs text-slate-500 mt-1 task-desc">Execute comprehensive validation of all synchronized entities and review error logs.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none md:text-right" rows="1" placeholder="Add a note..." data-note-id="d1-1-note"></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAY 2 -->
+            <div class="relative flex flex-col md:flex-row items-center justify-between w-full mb-12">
+                <div class="order-1 w-full md:w-5/12 hidden md:block text-right pr-8">
+                    <h3 class="text-2xl font-bold text-slate-800">Day 2</h3>
+                    <p class="text-slate-500 font-medium date-display" data-day="2">Loading...</p>
+                </div>
+                
+                <div class="z-10 flex items-center justify-center order-1 w-12 h-12 bg-white text-slate-500 font-bold border-4 border-slate-200 rounded-full absolute left-1 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
+                    D2
+                </div>
+
+                <div class="order-1 w-full md:w-5/12 pl-20 md:pl-8 mt-4 md:mt-0">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100 transition-shadow">
+                         <!-- Mobile Header -->
+                         <div class="md:hidden mb-4 pb-3 border-b border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-800">Day 2</h3>
+                            <p class="text-slate-500 text-sm font-medium date-display" data-day="2"></p>
+                        </div>
+
+                        <ul class="space-y-6">
+                            <li class="task-container flex items-center gap-4">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d2-1"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Synchronize all account records created within the past 2 years.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none" rows="1" placeholder="Add a note..." data-note-id="d2-1-note"></textarea>
+                                </div>
+                            </li>
+                            <li class="task-container flex items-center gap-4">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d2-2"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Execute complete synchronization of all remaining contacts.</p>
+                                        <p class="text-xs text-sky-600 font-medium mt-1 task-desc">All historical time constraints are officially lifted.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none" rows="1" placeholder="Add a note..." data-note-id="d2-2-note"></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAY 3 -->
+            <div class="relative flex flex-col md:flex-row-reverse items-center justify-between w-full mb-12">
+                <div class="order-1 w-full md:w-5/12 hidden md:block text-left pl-8">
+                    <h3 class="text-2xl font-bold text-slate-800">Day 3</h3>
+                    <p class="text-slate-500 font-medium date-display" data-day="3">Loading...</p>
+                </div>
+                
+                <div class="z-10 flex items-center justify-center order-1 w-12 h-12 bg-white text-slate-500 font-bold border-4 border-slate-200 rounded-full absolute left-1 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
+                    D3
+                </div>
+
+                <div class="order-1 w-full md:w-5/12 pl-20 md:pr-8 md:pl-0 mt-4 md:mt-0 text-left md:text-right">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100 transition-shadow">
+                         <!-- Mobile Header -->
+                         <div class="md:hidden mb-4 pb-3 border-b border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-800">Day 3</h3>
+                            <p class="text-slate-500 text-sm font-medium date-display" data-day="3"></p>
+                        </div>
+
+                        <ul class="space-y-6 md:flex md:flex-col md:items-end text-left md:text-right">
+                            <li class="task-container flex items-center md:flex-row-reverse gap-4 w-full">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d3-1"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap md:justify-end gap-2 mb-1.5">
+                                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Execute complete synchronization of all remaining accounts.</p>
+                                        <p class="text-xs text-sky-600 font-medium mt-1 task-desc">All historical time constraints are officially lifted.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none md:text-right" rows="1" placeholder="Add a note..." data-note-id="d3-1-note"></textarea>
+                                </div>
+                            </li>
+                            <li class="task-container flex items-center md:flex-row-reverse gap-4 pt-4 border-t border-slate-50 w-full">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d3-2"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap md:justify-end gap-2 mb-1.5">
+                                            <span class="entity-badge badge-leads"><i class="fa-solid fa-bullseye"></i> Leads</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Assuming no blockers in Account and Contact synchronization:</p>
+                                        <p class="text-sm font-bold mt-1 text-slate-900 task-desc">Enable Lead automation workflows.</p>
+                                        <p class="text-xs text-slate-500 mt-1 task-desc">Conduct detailed validation of all newly generated Leads.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:bg-white resize-none md:text-right" rows="1" placeholder="Add a note..." data-note-id="d3-2-note"></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAY 4 - 5 -->
+            <div class="relative flex flex-col md:flex-row items-center justify-between w-full mb-12">
+                <div class="order-1 w-full md:w-5/12 hidden md:block text-right pr-8">
+                    <h3 class="text-2xl font-bold text-slate-800">Day 4 - 5</h3>
+                    <p class="text-slate-500 font-medium date-range-display" data-start-day="4" data-end-day="5">Loading...</p>
+                </div>
+                
+                <div class="z-10 flex items-center justify-center order-1 w-12 h-12 bg-slate-100 text-slate-400 font-bold border-4 border-white rounded-full absolute left-1 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
+                    D4-5
+                </div>
+
+                <div class="order-1 w-full md:w-5/12 pl-20 md:pl-8 mt-4 md:mt-0">
+                    <div class="bg-slate-50 p-6 rounded-xl shadow-sm border border-slate-200 border-dashed">
+                        <!-- Mobile Header -->
+                        <div class="md:hidden mb-4 pb-3 border-b border-slate-200">
+                            <h3 class="text-xl font-bold text-slate-800">Day 4 - 5</h3>
+                            <p class="text-slate-500 text-sm font-medium date-range-display" data-start-day="4" data-end-day="5"></p>
+                        </div>
+
+                        <ul class="space-y-6">
+                            <li class="task-container flex items-center gap-4">
+                                <div><input type="checkbox" class="task-checkbox" data-id="d45-1"></div>
+                                <div class="task-text flex-1">
+                                    <div class="task-content-main">
+                                        <div class="flex flex-wrap gap-2 mb-1.5">
+                                            <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
+                                            <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-800 task-desc">Conduct a comprehensive evaluation of overall data synchronization integrity.</p>
+                                    </div>
+                                    <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 resize-none" rows="1" placeholder="Add a note..." data-note-id="d45-1-note"></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAY 5 (FINAL) -->
+            <div class="relative flex flex-col md:flex-row-reverse items-center justify-between w-full mb-8">
+                <div class="order-1 w-full md:w-5/12 hidden md:block text-left pl-8">
+                    <h3 class="text-2xl font-bold text-emerald-600">Day 5</h3>
+                    <p class="text-emerald-600 font-medium date-display" data-day="5">Loading...</p>
+                </div>
+                
+                <div class="z-10 flex items-center justify-center order-1 w-16 h-16 bg-emerald-500 shadow-xl rounded-full border-4 border-white absolute left-0 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
+                    <i class="fa-solid fa-check text-white text-2xl"></i>
+                </div>
+
+                <div class="order-1 w-full md:w-5/12 pl-20 md:pr-8 md:pl-0 mt-4 md:mt-0 text-left md:text-right">
+                    <div class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200">
+                        <!-- Mobile Header -->
+                        <div class="md:hidden mb-4 pb-3 border-b border-emerald-200">
+                            <h3 class="text-xl font-bold text-emerald-600">Day 5</h3>
+                            <p class="text-emerald-600 text-sm font-medium date-display" data-day="5"></p>
+                        </div>
+
+                        <div class="task-container flex items-center md:flex-row-reverse gap-4 w-full">
+                            <div><input type="checkbox" class="task-checkbox border-emerald-400" data-id="d5-1"></div>
+                            <div class="task-text flex-1">
+                                <div class="task-content-main">
+                                    <h4 class="text-lg font-bold text-emerald-900 leading-tight task-desc">Deployment Successfully Completed</h4>
+                                    <p class="text-sm text-emerald-700 font-medium mt-1 task-desc">The integration process is now fully documented, reviewed, and formally approved.</p>
+                                </div>
+                                <textarea class="note-input mt-3 w-full text-xs p-2.5 border border-emerald-200 rounded-lg bg-white text-slate-700 placeholder-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 resize-none md:text-right" rows="1" placeholder="Final remarks..." data-note-id="d5-1-note"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURATION: Hardcoded Start Date ---
+            // Format: YYYY-MM-DD
+            const START_DATE_STRING = '2026-03-02'; 
+            
+            const dayZeroDate = new Date(START_DATE_STRING);
+            
+            // Days in English
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // Function to add business days (skipping weekends)
+            function addBusinessDays(startDate, daysToAdd) {
+                let currentDate = new Date(startDate.getTime());
+                let addedDays = 0;
+                
+                while (addedDays < daysToAdd) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    // 0 is Sunday, 6 is Saturday
+                    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+                        addedDays++;
+                    }
+                }
+                return currentDate;
+            }
+
+            // Format date output (e.g. "Monday, Mar 2, 2026")
+            function formatDate(date) {
+                return `${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+            }
+
+            // Update all dates on the page
+            function updateDates() {
+                // Update Header
+                document.getElementById('headerStartDate').textContent = formatDate(dayZeroDate);
+
+                // Simple single days
+                document.querySelectorAll('.date-display').forEach(el => {
+                    const daysOffset = parseInt(el.getAttribute('data-day'));
+                    const targetDate = addBusinessDays(dayZeroDate, daysOffset);
+                    el.textContent = formatDate(targetDate);
+                });
+
+                // Date ranges (like Day 4 - 5)
+                document.querySelectorAll('.date-range-display').forEach(el => {
+                    const startDay = parseInt(el.getAttribute('data-start-day'));
+                    const endDay = parseInt(el.getAttribute('data-end-day'));
+                    
+                    const dateStart = addBusinessDays(dayZeroDate, startDay);
+                    const dateEnd = addBusinessDays(dayZeroDate, endDay);
+                    
+                    el.textContent = `${formatDate(dateStart)}  –  ${formatDate(dateEnd)}`;
+                });
+            }
+
+            // Run calculation
+            updateDates();
+
+            // --- Checkbox Logic (Save to LocalStorage) ---
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+
+            const updateTaskStyle = (checkbox) => {
+                // Find the closest wrapper with our explicit task-container class
+                const listItem = checkbox.closest('.task-container'); 
+                if (!listItem) return;
+                
+                if (checkbox.checked) {
+                    listItem.classList.add('task-completed');
+                } else {
+                    listItem.classList.remove('task-completed');
+                }
+            };
+
+            checkboxes.forEach(checkbox => {
+                const taskId = checkbox.dataset.id;
+                
+                // Load saved state
+                const savedState = localStorage.getItem(`integration_task_${taskId}`);
+                if (savedState === 'true') {
+                    checkbox.checked = true;
+                    updateTaskStyle(checkbox);
+                }
+
+                // Listen to toggle
+                checkbox.addEventListener('change', (e) => {
+                    localStorage.setItem(`integration_task_${taskId}`, e.target.checked);
+                    updateTaskStyle(e.target);
+                });
+            });
+
+            // --- Notes Textarea Logic (Save to LocalStorage & Auto-resize) ---
+            const textareas = document.querySelectorAll('.note-input');
+
+            textareas.forEach(textarea => {
+                const noteId = textarea.dataset.noteId;
+
+                // Load saved note
+                const savedNote = localStorage.getItem(`integration_note_${noteId}`);
+                if (savedNote) {
+                    textarea.value = savedNote;
+                    // Trigger resize to fit content
+                    setTimeout(() => {
+                        textarea.style.height = 'auto';
+                        textarea.style.height = (textarea.scrollHeight) + 'px';
+                    }, 0);
+                }
+
+                // Listen to input (Save & Resize)
+                textarea.addEventListener('input', function() {
+                    localStorage.setItem(`integration_note_${noteId}`, this.value);
+                    
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
