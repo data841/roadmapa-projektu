@@ -147,7 +147,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Integration Launch Plan</h1>
                 <p class="text-slate-500 mt-2 flex items-center gap-2 text-sm font-medium">
-                    <i class="fa-solid fa-circle-info text-slate-400"></i> Plan updated on March 12.
+                    <i class="fa-solid fa-circle-info text-slate-400"></i> Plan updated on March 25.
                 </p>
             </div>
             <div class="bg-slate-50 px-5 py-4 rounded-xl border border-slate-200 shadow-inner text-right min-w-[200px]">
@@ -178,9 +178,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="entity-badge badge-accounts"><i class="fa-solid fa-building"></i> Accounts</span>
-                            <span class="done-indicator"><i class="fa-solid fa-check" checked></i> Done</span>
+                            <span class="done-indicator"><i class="fa-solid fa-check"></i> Done</span>
                         </div>
-                        <input type="checkbox" class="task-checkbox" data-id="obj-accounts">
+                        <input type="checkbox" class="task-checkbox" data-id="obj-accounts" checked>
                     </div>
                     <textarea class="note-input w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white resize-none" rows="2" placeholder="Overall notes or status..." data-note-id="obj-accounts-note"></textarea>
                 </div>
@@ -418,7 +418,8 @@
             <div class="relative flex flex-col md:flex-row-reverse items-center justify-between w-full mb-12">
                 <div class="order-1 w-full md:w-5/12 hidden md:block text-left pl-8">
                     <h3 class="text-2xl font-bold text-slate-800">Phase 3: Contacts (created in last 180 Days)</h3>
-                    <p class="text-slate-500 font-medium date-range-display" data-start-day="5" data-end-day="7">Loading...</p>
+                    <!-- Modified data-end-day from 7 to 11 to match March 31 target -->
+                    <p class="text-slate-500 font-medium date-range-display" data-start-day="5" data-end-day="11">Loading...</p>
                 </div>
                 
                 <div class="z-10 flex items-center justify-center order-1 w-12 h-12 bg-white text-slate-500 font-bold border-4 border-slate-200 rounded-full absolute left-1 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
@@ -430,18 +431,24 @@
                         <!-- Mobile Header -->
                         <div class="md:hidden mb-4 pb-3 border-b border-slate-100">
                             <h3 class="text-xl font-bold text-slate-800">Phase 3: Contacts (180 Days)</h3>
-                            <p class="text-slate-500 text-sm font-medium date-range-display" data-start-day="5" data-end-day="7"></p>
+                            <p class="text-slate-500 text-sm font-medium date-range-display" data-start-day="5" data-end-day="11"></p>
                         </div>
 
                         <ul class="space-y-6 md:flex md:flex-col md:items-end text-left md:text-right">
-                            <li class="task-container flex items-center md:flex-row-reverse gap-4 w-full">
-                                <div><input type="checkbox" class="task-checkbox" data-id="phase3-1"></div>
+                            <li class="task-container flex items-start md:flex-row-reverse gap-4 w-full">
+                                <div class="mt-1"><input type="checkbox" class="task-checkbox" data-id="phase3-1"></div>
                                 <div class="task-text flex-1">
                                     <div class="task-content-main">
                                         <div class="flex flex-wrap md:justify-end gap-2 mb-1.5">
                                             <span class="entity-badge badge-contacts"><i class="fa-solid fa-user"></i> Contacts</span>
                                         </div>
                                         <p class="text-sm font-semibold text-slate-800 task-desc">Synchronize contact records created within the last 180 days.</p>
+                                        
+                                        <!-- Dependency / Status Notice added based on request -->
+                                        <div class="mt-3 bg-amber-50 border border-amber-200 rounded p-2.5 flex items-start md:justify-end gap-2 task-desc">
+                                            <i class="fa-solid fa-shield-halved text-amber-500 mt-0.5 text-xs"></i>
+                                            <span class="text-xs text-amber-800 font-medium leading-tight text-left md:text-right"><strong>Status:</strong> Currently waiting for data quality confirmation from Dynamics.</span>
+                                        </div>
                                     </div>
                                     <textarea class="note-input mt-2 w-full text-xs p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 resize-none md:text-right" rows="1" placeholder="Add a note..." data-note-id="phase3-note"></textarea>
                                 </div>
@@ -455,7 +462,8 @@
             <div class="relative flex flex-col md:flex-row items-center justify-between w-full mb-12">
                 <div class="order-1 w-full md:w-5/12 hidden md:block text-right pr-8">
                     <h3 class="text-2xl font-bold text-slate-800">Phase 4: Contacts (Remaining)</h3>
-                    <p class="text-slate-500 font-medium date-range-display" data-start-day="8" data-end-day="10">Loading...</p>
+                    <!-- Modified data range: +4 days to match shifting -->
+                    <p class="text-slate-500 font-medium date-range-display" data-start-day="12" data-end-day="14">Loading...</p>
                 </div>
                 
                 <div class="z-10 flex items-center justify-center order-1 w-12 h-12 bg-white text-slate-500 font-bold border-4 border-slate-200 rounded-full absolute left-0 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
@@ -467,7 +475,7 @@
                         <!-- Mobile Header -->
                         <div class="md:hidden mb-4 pb-3 border-b border-slate-100">
                             <h3 class="text-xl font-bold text-slate-800">Phase 4: Contacts (Remaining)</h3>
-                            <p class="text-slate-500 text-sm font-medium date-range-display" data-start-day="8" data-end-day="10"></p>
+                            <p class="text-slate-500 text-sm font-medium date-range-display" data-start-day="12" data-end-day="14"></p>
                         </div>
 
                         <ul class="space-y-6">
@@ -492,7 +500,8 @@
             <div class="relative flex flex-col md:flex-row-reverse items-center justify-between w-full mb-8">
                 <div class="order-1 w-full md:w-5/12 hidden md:block text-left pl-8">
                     <h3 class="text-2xl font-bold text-emerald-600">Phase 5: Completion</h3>
-                    <p class="text-emerald-600 font-medium date-display" data-day="11">Loading...</p>
+                    <!-- Modified data-day from 11 to 15 to match shifting -->
+                    <p class="text-emerald-600 font-medium date-display" data-day="15">Loading...</p>
                 </div>
                 
                 <div class="z-10 flex items-center justify-center order-1 w-16 h-16 bg-emerald-500 shadow-xl rounded-full border-4 border-white absolute left-1 md:left-1/2 transform -translate-x-0 md:-translate-x-1/2">
@@ -504,7 +513,7 @@
                          <!-- Mobile Header -->
                          <div class="md:hidden mb-4 pb-3 border-b border-emerald-200">
                             <h3 class="text-xl font-bold text-emerald-600">Phase 5: Completion</h3>
-                            <p class="text-emerald-600 text-sm font-medium date-display" data-day="11"></p>
+                            <p class="text-emerald-600 text-sm font-medium date-display" data-day="15"></p>
                         </div>
 
                         <ul class="space-y-6 md:flex md:flex-col md:items-end text-left md:text-right">
@@ -611,6 +620,13 @@
                 }
             };
 
+            // Run initial styles check for pre-checked items before local storage overrides
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    updateTaskStyle(checkbox);
+                }
+            });
+
             checkboxes.forEach(checkbox => {
                 const taskId = checkbox.dataset.id;
                 
@@ -620,16 +636,19 @@
                     return;
                 }
                 
-                // Load saved state
-                const savedState = localStorage.getItem(`integration_task_v6_${taskId}`);
+                // Load saved state (bumped to v7 to reset state if needed with new timeline)
+                const savedState = localStorage.getItem(`integration_task_v7_${taskId}`);
                 if (savedState === 'true') {
                     checkbox.checked = true;
+                    updateTaskStyle(checkbox);
+                } else if (savedState === 'false') {
+                    checkbox.checked = false;
                     updateTaskStyle(checkbox);
                 }
 
                 // Listen to toggle
                 checkbox.addEventListener('change', (e) => {
-                    localStorage.setItem(`integration_task_v6_${taskId}`, e.target.checked);
+                    localStorage.setItem(`integration_task_v7_${taskId}`, e.target.checked);
                     updateTaskStyle(e.target);
                 });
             });
@@ -640,8 +659,8 @@
             textareas.forEach(textarea => {
                 const noteId = textarea.dataset.noteId;
 
-                // Load saved note
-                const savedNote = localStorage.getItem(`integration_note_v6_${noteId}`);
+                // Load saved note (bumped to v7 to match)
+                const savedNote = localStorage.getItem(`integration_note_v7_${noteId}`);
                 if (savedNote) {
                     textarea.value = savedNote;
                     // Trigger resize to fit content
@@ -653,7 +672,7 @@
 
                 // Listen to input (Save & Resize)
                 textarea.addEventListener('input', function() {
-                    localStorage.setItem(`integration_note_v6_${noteId}`, this.value);
+                    localStorage.setItem(`integration_note_v7_${noteId}`, this.value);
                     
                     this.style.height = 'auto';
                     this.style.height = (this.scrollHeight) + 'px';
