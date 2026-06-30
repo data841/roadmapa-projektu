@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HubSpot — od formuláře k dealu</title>
+<style>
+  :root {
+    --ink: #16213a;
+    --ink-soft: #4a5470;
+    --ink-faint: #8a92a8;
+    --paper: #f3f0e9;
+    --paper-2: #faf8f3;
+    --line: #d9d4c7;
+    --line-soft: #e7e3d8;
+    --signal: #d8643a;
+    --signal-deep: #a8421f;
+    --signal-bg: #f7e6dd;
+    --go: #1d7d5e;
+    --go-bg: #dcefe7;
+    --wire: #b8b1a0;
+    --radius: 14px;
+    --mono: "SFMono-Regular", "JetBrains Mono", "Consolas", monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(20px, 5vw, 64px) clamp(16px, 4vw, 48px) 80px;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  /* ---- Header ---- */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--signal-deep);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 28px; height: 1.5px;
+    background: var(--signal);
+  }
+
+  h1 {
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    font-weight: 680;
+    margin-bottom: 18px;
+  }
+  h1 .em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--signal);
+  }
+
+  .lede {
+    font-size: clamp(16px, 2.4vw, 18px);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin-bottom: 14px;
+  }
+
+  /* ---- The moment bar ---- */
+  .moment {
+    margin: 38px 0 14px;
+    background: var(--ink);
+    color: var(--paper-2);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .moment::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 28px, rgba(255,255,255,0.025) 28px 29px);
+    pointer-events: none;
+  }
+  .moment-btn {
+    flex-shrink: 0;
+    background: var(--signal);
+    color: #fff;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 20px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.2s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .moment-btn:hover { background: var(--signal-deep); }
+  .moment-btn:active { transform: scale(0.97); }
+  .moment-btn:focus-visible { outline: 2px solid var(--paper-2); outline-offset: 2px; }
+  .moment-txt { position: relative; z-index: 1; }
+  .moment-txt strong { font-weight: 600; }
+  .moment-txt span {
+    display: block;
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+
+  .timer {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin: 0 0 28px 2px;
+    height: 18px;
+    transition: color 0.2s ease;
+  }
+  .timer .ms { color: var(--signal); font-weight: 600; }
+
+  /* ---- Steps ---- */
+  .steps { position: relative; }
+
+  .step {
+    position: relative;
+    padding-left: 56px;
+    margin-bottom: 12px;
+    z-index: 1;
+  }
+  /* connector line between consecutive steps inside a zone */
+  .step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 19px; top: 40px; bottom: -12px;
+    width: 2px;
+    background: var(--wire);
+    z-index: 0;
+  }
+
+  .node {
+    position: absolute;
+    left: 0; top: 0;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--paper-2);
+    border: 2px solid var(--wire);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    transition: all 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
+    z-index: 2;
+  }
+
+  .step.lit .node {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: #fff;
+    transform: scale(1.08);
+  }
+  .step.done .node {
+    background: var(--go);
+    border-color: var(--go);
+    color: #fff;
+  }
+
+  .card {
+    background: var(--paper-2);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .step.lit .card {
+    border-color: var(--signal);
+    box-shadow: 0 6px 22px -12px rgba(216, 100, 58, 0.5);
+  }
+
+  .card-head {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--ink);
+  }
+  .card-head:focus-visible { outline: 2px solid var(--signal); outline-offset: -2px; }
+
+  .card-title { flex: 1; }
+  .card-title .t {
+    font-size: 16px;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    display: block;
+  }
+  .card-title .s {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .tag.auto { background: var(--signal-bg); color: var(--signal-deep); }
+  .tag.you  { background: #e6e1f0; color: #4a3d7a; }
+
+  .chev {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.3s ease;
+  }
+  .card.open .chev { transform: rotate(90deg); }
+
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card.open .card-body { max-height: 520px; }
+
+  .card-body-inner {
+    padding: 2px 20px 20px 20px;
+    border-top: 1px solid var(--line-soft);
+    margin-top: -2px;
+  }
+  .card-body-inner > p {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    padding-top: 14px;
+  }
+  .card-body-inner p + p { padding-top: 10px; }
+
+  .detail {
+    margin-top: 14px;
+    background: var(--paper);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+  }
+  .detail b { color: var(--ink); font-weight: 600; }
+  .detail.note {
+    background: var(--signal-bg);
+    color: var(--signal-deep);
+  }
+  .detail.note b { color: var(--signal-deep); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: #ece8dd;
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: var(--signal-deep);
+  }
+
+  /* ---- Footer note ---- */
+  .footnote {
+    margin-top: 36px;
+    padding: 20px 22px;
+    border-left: 3px solid var(--signal);
+    background: var(--paper-2);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .footnote b { color: var(--ink); }
+
+  .reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 24px;
+    background: none;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 9px 16px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .reset:hover { border-color: var(--signal); color: var(--signal-deep); }
+
+  /* ---- Flow zones ---- */
+  .zone {
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 16px 6px;
+    margin-bottom: 0;
+    background: rgba(255,255,255,0.35);
+  }
+  .zone.ws {
+    border-color: #ecc9b8;
+    background: rgba(247, 230, 221, 0.4);
+  }
+  .zone-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-soft);
+  }
+  .zone-label.ws { color: var(--signal-deep); }
+  .zone-label .zd {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    background: var(--ink-soft);
+  }
+  .zone-label.ws .zd { background: var(--signal); }
+
+  /* zone-internal timeline */
+  .zone { position: relative; }
+  .zone .steps-inner { position: relative; }
+
+  .handoff {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    margin: 0 0 0 0;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+  }
+  .handoff svg {
+    width: 22px; height: 22px;
+    flex-shrink: 0;
+    color: var(--signal);
+  }
+
+  @media (max-width: 520px) {
+    .moment { flex-direction: column; align-items: stretch; gap: 14px; }
+    .moment-btn { width: 100%; }
+    .tag { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">HubSpot · od formuláře k dealu</div>
+  <h1>Jedna cesta: <span class="em">formulář → kontakt → lead → deal</span></h1>
+  <p class="lede">Návštěvník vyplní formulář. Sleduj, jak ten záznam projde celým HubSpotem — nejdřív se uloží do CRM jako kontakt a firma. Kontakt pak zůstává jako základ a obchodník nad ním ve workspace vytvoří lead, ze kterého se po kvalifikaci stane deal — obojí se ke kontaktu jen přiřadí, nic ho nenahrazuje.</p>
+
+  <div class="moment">
+    <button class="moment-btn" id="fire">Odeslat formulář</button>
+    <div class="moment-txt">
+      <strong>jan.novak@firma.cz</strong>
+      <span>Jan Novák · Firma s.r.o. · „Mám zájem o demo"</span>
+    </div>
+  </div>
+  <div class="timer" id="timer">Klikni na tlačítko a sleduj celou cestu.</div>
+
+  <div class="steps" id="steps">
+
+    <div class="zone">
+      <div class="zone-label db"><span class="zd"></span>CRM — databáze záznamů · běží automaticky</div>
+
+      <div class="step" data-i="0">
+        <div class="node">1</div>
+        <div class="card">
+          <button class="card-head">
+            <div class="card-title">
+              <span class="t">Formulář odešle data do HubSpotu</span>
+              <span class="s">Prohlížeč pošle vyplněná pole na servery HubSpotu</span>
+            </div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="card-body"><div class="card-body-inner">
+            <p>Formulář je kus HubSpot kódu na tvém webu. Po odeslání zabalí všechna pole a pošle je na HubSpot — nepotřebuješ vlastní backend ani databázi.</p>
+            <div class="detail"><b>Cookie v balíčku:</b> spolu s daty letí i cookie <code>hubspotutk</code>, takže HubSpot ví, které stránky člověk navštívil ještě <i>před</i> odesláním, a doplní mu celou historii.</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="step" data-i="1">
+        <div class="node">2</div>
+        <div class="card">
+          <button class="card-head">
+            <div class="card-title">
+              <span class="t">Vznikne kontakt (Contact)</span>
+              <span class="s">HubSpot podle e-mailu pozná, jestli člověka už zná</span>
+            </div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="card-body"><div class="card-body-inner">
+            <p>E-mail je jedinečný klíč. Existuje-li kontakt s touhle adresou, údaje se jen doplní — žádný duplikát. Pokud ne, vznikne nový záznam.</p>
+            <div class="detail"><b>Kontakt je jádro CRM:</b> jeden konkrétní člověk se vším, co o něm víš. Tady cesta začíná.</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="step" data-i="2">
+        <div class="node">3</div>
+        <div class="card">
+          <button class="card-head">
+            <div class="card-title">
+              <span class="t">Přiřadí se firma (Company)</span>
+              <span class="s">Podle domény v e-mailové adrese</span>
+            </div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="card-body"><div class="card-body-inner">
+            <p>HubSpot vezme část za zavináčem — <code>firma.cz</code> — a spáruje kontakt s firmou. Když firma ještě není v systému, vytvoří ji a zkusí doplnit logo, odvětví a sídlo.</p>
+            <div class="detail note"><b>Pozor na freemaily:</b> u <code>@gmail.com</code> nebo <code>@seznam.cz</code> se firma <b>nezaloží</b> — jinak by vznikla jedna obří „firma Gmail" se stovkami cizích lidí.</div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="handoff">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16M5 13l7 7 7-7"/></svg>
+      <span>Kontakt a firma zůstávají v CRM jako základ. Workspace nad nimi staví lead a deal.</span>
+    </div>
+
+    <div class="zone ws">
+      <div class="zone-label ws"><span class="zd"></span>Sales Workspace — práce obchodníka</div>
+
+      <div class="step" data-i="3">
+        <div class="node">4</div>
+        <div class="card">
+          <button class="card-head">
+            <div class="card-title">
+              <span class="t">Nad kontaktem vznikne lead</span>
+              <span class="s">Kontakt zůstává — lead se k němu přiřadí</span>
+            </div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="card-body"><div class="card-body-inner">
+            <p>Lead není náhrada kontaktu — vzniká jako samostatný záznam <i>nad ním</i> a je k němu přiřazený. Kontakt v CRM zůstává pořád jako základ, lead jen říká „tohohle člověka je teď potřeba oslovit". Vzniká automaticky (workflow podle podmínky, např. „přišel z formuláře Demo"), nebo ho založí obchodník ručně.</p>
+            <div class="detail"><b>Workspace není další databáze</b> — je to pracovní pohled nad CRM. Lead z něj filtruje jen to, co se má dnes řešit.</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="step" data-i="4">
+        <div class="node">5</div>
+        <div class="card">
+          <button class="card-head">
+            <div class="card-title">
+              <span class="t">Obchodník lead kvalifikuje</span>
+              <span class="s">New → Connected → Qualified</span>
+            </div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="card-body"><div class="card-body-inner">
+            <p>Obchodník se ozve, ověří zájem, potřebu a rozpočet a posouvá lead přes jeho stavy. Nehodící se lead označí jako Disqualified a jde dál.</p>
+            <div class="detail"><b>Kvalifikace je filtr:</b> oddělí „možná někdy" od „tohle je reálná příležitost".</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="step" data-i="5">
+        <div class="node">6</div>
+        <div class="card">
+          <button class="card-head">
+            <div class="card-title">
+              <span class="t">Vznikne deal a přiřadí se ke kontaktu</span>
+              <span class="s">Kontakt i firma zůstávají — deal se k nim napojí</span>
+            </div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="card-body"><div class="card-body-inner">
+            <p>Z kvalifikovaného leadu vznikne deal — reálná příležitost s hodnotou a datem uzavření. Lead se uzavře, ale deal opět <b>nenahrazuje kontakt</b>: vytvoří se nový záznam a přes <b>asociace</b> se přiřadí ke kontaktu i firmě. Kontakt tak má na sobě navěšený lead i deal a celý kontext drží pohromadě.</p>
+            <div class="detail"><b>Deal pak putuje pipeline</b> zleva doprava, fázi po fázi, až do Closed won (vyhráno) nebo Closed lost (prohráno).</div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="reset" id="reset">↺ Spustit znovu</button>
+
+</div>
+
+<script>
+  const steps = [...document.querySelectorAll('.step')];
+  const timer = document.getElementById('timer');
+  const fireBtn = document.getElementById('fire');
+  const resetBtn = document.getElementById('reset');
+
+  // Accordion behaviour
+  document.querySelectorAll('.card-head').forEach(head => {
+    head.addEventListener('click', () => {
+      head.closest('.card').classList.toggle('open');
+    });
+  });
+
+  const fakeMs = ['krok 1', 'krok 2', 'krok 3', 'krok 4', 'krok 5', 'krok 6'];
+  let running = false;
+
+  function reset() {
+    steps.forEach(s => {
+      s.classList.remove('lit', 'done');
+      s.querySelector('.card').classList.remove('open');
+    });
+    timer.innerHTML = 'Klikni na tlačítko a sleduj celou cestu.';
+  }
+
+  function run() {
+    if (running) return;
+    running = true;
+    reset();
+    fireBtn.disabled = true;
+    fireBtn.style.opacity = 0.6;
+
+    let i = 0;
+    const tick = () => {
+      if (i > 0) steps[i - 1].classList.replace('lit', 'done');
+      if (i >= steps.length) {
+        timer.innerHTML = '<span class="ms">✓ hotovo</span> — z formuláře je kontakt, firma, lead a nakonec deal v pipeline.';
+        fireBtn.disabled = false;
+        fireBtn.style.opacity = 1;
+        running = false;
+        return;
+      }
+      steps[i].classList.add('lit');
+      timer.innerHTML = 'běží… <span class="ms">' + fakeMs[i] + '</span>';
+      i++;
+      setTimeout(tick, 780);
+    };
+    setTimeout(tick, 300);
+  }
+
+  fireBtn.addEventListener('click', run);
+  resetBtn.addEventListener('click', () => { if (!running) reset(); });
+</script>
+</body>
+</html>
